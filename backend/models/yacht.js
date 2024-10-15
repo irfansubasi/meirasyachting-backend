@@ -7,6 +7,7 @@ const yachtSchema = new mongoose.Schema({
   people: { type: Number, required: true },
   cabin: { type: Number, required: true },
   location: { type: String, required: true },
+  images: { type: Number, required: true },
   features: [{ type: String }],
 });
 
