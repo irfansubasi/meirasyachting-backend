@@ -2,6 +2,7 @@
   "name": "my-backend-app",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "main": "backend/server.js",
   "scripts": {
     "dev": "node backend/server.js",
