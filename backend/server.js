@@ -44,6 +44,7 @@ app.post('/yachts', async (req, res) => {
     cabin,
     location,
     features,
+    images,
   });
 
   try {
