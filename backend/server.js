@@ -91,6 +91,24 @@ app.put('/yachts/:id', async (req, res) => {
   }
 });
 
+app.put('/yachts/:id', async (req, res) => {
+  const { id } = req.params; // URL'den gelen ID
+  const updatedData = req.body; // Güncellenmiş veri
+
+  try {
+    const updatedYat = await Yacht.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    }); // Veriyi güncelle
+    if (!updatedYat) {
+      return res.status(404).json({ error: 'Yat bulunamadı.' }); // Yat bulunamazsa hata döndür
+    }
+    res.status(200).json(updatedYat); // Güncellenmiş yatı döndür
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Yat güncelleme işlemi başarısız oldu.' });
+  }
+});
+
 app.post('/send-email', (req, res) => {
   const { user_name, user_email, user_phone, user_location, user_message } =
     req.body;
