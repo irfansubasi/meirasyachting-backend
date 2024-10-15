@@ -73,7 +73,7 @@ app.get('/yachts', async (req, res) => {
   }
 });
 
-app.put('/yachts/:id', async (req, res) => {
+app.get('/yachts/:id', async (req, res) => {
   const { id } = req.params; // URL'den gelen ID
   const updatedData = req.body; // Güncellenmiş veri
 
