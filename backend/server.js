@@ -29,6 +29,10 @@ mongoose
   .then(() => console.log('MongoDB bağlantısı başarılı!'))
   .catch((err) => console.log('MongoDB bağlantısı başarısız:', err));
 
+app.get('/', (req, res) => {
+  res.send('API çalışıyor!');
+});
+
 app.post('/yachts', async (req, res) => {
   const { name, type, length, people, cabin, location, features } = req.body;
 
