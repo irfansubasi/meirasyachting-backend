@@ -34,7 +34,8 @@ app.get('/', (req, res) => {
 });
 
 app.post('/yachts', async (req, res) => {
-  const { name, type, length, people, cabin, location, features } = req.body;
+  const { name, type, length, people, cabin, location, features, images } =
+    req.body;
 
   const yeniYat = new Yacht({
     name,
