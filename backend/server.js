@@ -38,22 +38,33 @@ app.post('/yachts', async (req, res) => {
     req.body;
 
   const yeniYat = new Yacht({
-    name,
-    type,
+    name: {
+      tr: name.tr,
+      en: name.en,
+    },
+    type: {
+      tr: type.tr,
+      en: type.en,
+    },
     length,
     people,
     cabin,
-    location,
-    features,
+    location: {
+      tr: location.tr,
+      en: location.en,
+    },
+    features: {
+      tr: features.tr,
+      en: features.en,
+    },
     images,
   });
 
   try {
-    const yatVerisi = new Yacht(req.body);
-    await yatVerisi.save();
+    await yeniYat.save();
     res
       .status(201)
-      .json({ message: 'Yat başarıyla kaydedildi!', yat: yatVerisi });
+      .json({ message: 'Yat başarıyla kaydedildi!', yat: yeniYat });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -73,36 +84,81 @@ app.get('/yachts', async (req, res) => {
   }
 });
 
-app.get('/yachts/:id', async (req, res) => {
-  const { id } = req.params; // URL'den gelen ID
-  const updatedData = req.body; // Güncellenmiş veri
-
+app.get('/yachts/TR', async (req, res) => {
   try {
-    const updatedYat = await Yacht.findByIdAndUpdate(id, updatedData, {
-      new: true,
-    }); // Veriyi güncelle
-    if (!updatedYat) {
-      return res.status(404).json({ error: 'Yat bulunamadı.' }); // Yat bulunamazsa hata döndür
-    }
-    res.status(200).json(updatedYat); // Güncellenmiş yatı döndür
+    const yatlar = await Yacht.find();
+    const turkceYatlar = yatlar.map((yacht) => ({
+      name: yacht.name.tr,
+      type: yacht.type.tr,
+      description: yacht.description?.tr,
+      length: yacht.length,
+      people: yacht.people,
+      cabin: yacht.cabin,
+      location: yacht.location?.tr,
+      features: yacht.features?.tr,
+      images: yacht.images,
+    }));
+    res.status(200).json(turkceYatlar);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Yat güncelleme işlemi başarısız oldu.' });
+    res
+      .status(500)
+      .json({ error: 'Türkçe yat verilerini alma işlemi başarısız oldu.' });
+  }
+});
+
+app.get('/yachts/EN', async (req, res) => {
+  try {
+    const yatlar = await Yacht.find();
+    const ingilizceYatlar = yatlar.map((yacht) => ({
+      name: yacht.name.en,
+      type: yacht.type.en,
+      description: yacht.description?.en,
+      length: yacht.length,
+      people: yacht.people,
+      cabin: yacht.cabin,
+      location: yacht.location?.en,
+      features: yacht.features?.en,
+      images: yacht.images,
+    }));
+    res.status(200).json(ingilizceYatlar);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: 'İngilizce yat verilerini alma işlemi başarısız oldu.' });
+  }
+});
+
+app.get('/yachts/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const yat = await Yacht.findById(id);
+    if (!yat) {
+      return res.status(404).json({ error: 'Yat bulunamadı.' });
+    }
+    res.status(200).json(yat);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: 'Yat bilgilerini alma işlemi başarısız oldu.' });
   }
 });
 
 app.put('/yachts/:id', async (req, res) => {
-  const { id } = req.params; // URL'den gelen ID
-  const updatedData = req.body; // Güncellenmiş veri
+  const { id } = req.params;
+  const updatedData = req.body;
 
   try {
     const updatedYat = await Yacht.findByIdAndUpdate(id, updatedData, {
       new: true,
-    }); // Veriyi güncelle
+    });
     if (!updatedYat) {
-      return res.status(404).json({ error: 'Yat bulunamadı.' }); // Yat bulunamazsa hata döndür
+      return res.status(404).json({ error: 'Yat bulunamadı.' });
     }
-    res.status(200).json(updatedYat); // Güncellenmiş yatı döndür
+    res.status(200).json(updatedYat);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Yat güncelleme işlemi başarısız oldu.' });
