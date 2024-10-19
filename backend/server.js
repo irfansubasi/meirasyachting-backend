@@ -84,6 +84,18 @@ app.get('/yachts/EN', async (req, res) => {
   }
 });
 
+app.post('/yachts', async (req, res) => {
+  const newYacht = new Yacht(req.body); // Yat verisini body'den al
+
+  try {
+    const savedYacht = await newYacht.save(); // Yatı kaydet
+    res.status(201).json(savedYacht); // Başarılı kayıtta 201 durumu döndür
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Yat kaydetme işlemi başarısız oldu.' }); // Hata durumunda 500 döndür
+  }
+});
+
 app.get('/yachts/:id', async (req, res) => {
   const { id } = req.params;
 
