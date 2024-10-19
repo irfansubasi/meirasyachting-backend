@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const yachtSchema = new mongoose.Schema({
+  _id: { type: String, required: true },
   name: { type: String, required: true },
   type: {
     tr: { type: String, required: true },

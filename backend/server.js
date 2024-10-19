@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import Yacht from './models/yacht.js';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -42,6 +41,7 @@ app.get('/yachts/TR', async (req, res) => {
   try {
     const yatlar = await Yacht.find();
     const turkceYatlar = yatlar.map((yacht) => ({
+      _id: yacht._id,
       name: yacht.name,
       type: yacht.type.tr,
       length: yacht.length,
@@ -64,6 +64,7 @@ app.get('/yachts/EN', async (req, res) => {
   try {
     const yatlar = await Yacht.find();
     const ingilizceYatlar = yatlar.map((yacht) => ({
+      _id: yacht._id,
       name: yacht.name,
       type: yacht.type.en,
       length: yacht.length,
