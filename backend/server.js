@@ -32,54 +32,26 @@ app.get('/', (req, res) => {
   res.send('API çalışıyor!');
 });
 
-app.get('/yachts', (req, res) => {
-  res.status(200).json({ message: 'Bu endpoint veri döndürmüyor.' });
-});
-
-// Türkçe yat verileri
-app.get('/yachts/TR', async (req, res) => {
+app.get('/yachts', async (req, res) => {
   try {
     const yatlar = await Yacht.find();
-    const turkceYatlar = yatlar.map((yacht) => ({
+    const allYachts = yatlar.map((yacht) => ({
       _id: yacht._id,
       name: yacht.name,
-      type: yacht.type.tr,
+      type: yacht.type,
       length: yacht.length,
       people: yacht.people,
       cabin: yacht.cabin,
       location: yacht.location,
-      features: yacht.features?.tr,
+      features: yacht.features,
       images: yacht.images,
     }));
-    res.status(200).json(turkceYatlar);
+    res.status(200).json(allYachts);
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ error: 'Türkçe yat verilerini alma işlemi başarısız oldu.' });
-  }
-});
-
-app.get('/yachts/EN', async (req, res) => {
-  try {
-    const yatlar = await Yacht.find();
-    const ingilizceYatlar = yatlar.map((yacht) => ({
-      _id: yacht._id,
-      name: yacht.name,
-      type: yacht.type.en,
-      length: yacht.length,
-      people: yacht.people,
-      cabin: yacht.cabin,
-      location: yacht.location,
-      features: yacht.features?.en,
-      images: yacht.images,
-    }));
-    res.status(200).json(ingilizceYatlar);
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ error: 'İngilizce yat verilerini alma işlemi başarısız oldu.' });
+      .json({ error: 'Yat verilerini alma işlemi başarısız oldu.' });
   }
 });
 
