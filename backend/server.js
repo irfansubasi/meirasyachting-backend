@@ -42,13 +42,12 @@ app.get('/yachts/TR', async (req, res) => {
   try {
     const yatlar = await Yacht.find();
     const turkceYatlar = yatlar.map((yacht) => ({
-      name: yacht.name.tr,
+      name: yacht.name,
       type: yacht.type.tr,
-      description: yacht.description?.tr,
       length: yacht.length,
       people: yacht.people,
       cabin: yacht.cabin,
-      location: yacht.location?.tr,
+      location: yacht.location,
       features: yacht.features?.tr,
       images: yacht.images,
     }));
@@ -65,13 +64,12 @@ app.get('/yachts/EN', async (req, res) => {
   try {
     const yatlar = await Yacht.find();
     const ingilizceYatlar = yatlar.map((yacht) => ({
-      name: yacht.name.en,
+      name: yacht.name,
       type: yacht.type.en,
-      description: yacht.description?.en,
       length: yacht.length,
       people: yacht.people,
       cabin: yacht.cabin,
-      location: yacht.location?.en,
+      location: yacht.location,
       features: yacht.features?.en,
       images: yacht.images,
     }));
