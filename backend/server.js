@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import Yacht from './models/yacht.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Brokerage from './models/brokerageYacht.js';
 
 dotenv.config();
 
@@ -90,6 +91,75 @@ app.put('/yachts/:id', async (req, res) => {
 
   try {
     const updatedYat = await Yacht.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
+    if (!updatedYat) {
+      return res.status(404).json({ error: 'Yat bulunamadı.' });
+    }
+    res.status(200).json(updatedYat);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Yat güncelleme işlemi başarısız oldu.' });
+  }
+});
+
+app.post('/brokerage', async (req, res) => {
+  const newYacht = new Brokerage(req.body);
+
+  try {
+    const savedYacht = await newYacht.save();
+    res.status(201).json(savedYacht);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Yat kaydetme işlemi başarısız oldu.' });
+  }
+});
+
+app.get('/brokerage', async (req, res) => {
+  try {
+    const yatlar = await Brokerage.find();
+    const allYachts = yatlar.map((yacht) => ({
+      _id: yacht._id,
+      name: yacht.name,
+      type: yacht.type,
+      length: yacht.length,
+      people: yacht.people,
+      location: yacht.location,
+      features: yacht.features,
+      images: yacht.images,
+    }));
+    res.status(200).json(allYachts);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: 'Yat verilerini alma işlemi başarısız oldu.' });
+  }
+});
+
+app.get('/brokerage/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const yat = await Brokerage.findById(id);
+    if (!yat) {
+      return res.status(404).json({ error: 'Yat bulunamadı.' });
+    }
+    res.status(200).json(yat);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: 'Yat bilgilerini alma işlemi başarısız oldu.' });
+  }
+});
+
+app.put('/yachts/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+
+  try {
+    const updatedYat = await Brokerage.findByIdAndUpdate(id, updatedData, {
       new: true,
     });
     if (!updatedYat) {
