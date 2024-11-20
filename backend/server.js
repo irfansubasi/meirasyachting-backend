@@ -7,6 +7,7 @@ import Yacht from './models/yacht.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Brokerage from './models/brokerageYacht.js';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -57,14 +58,14 @@ app.get('/yachts', async (req, res) => {
 });
 
 app.post('/yachts', async (req, res) => {
-  const newYacht = new Yacht(req.body); // Yat verisini body'den al
+  const newYacht = new Yacht(req.body);
 
   try {
-    const savedYacht = await newYacht.save(); // Yatı kaydet
-    res.status(201).json(savedYacht); // Başarılı kayıtta 201 durumu döndür
+    const savedYacht = await newYacht.save();
+    res.status(201).json(savedYacht);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Yat kaydetme işlemi başarısız oldu.' }); // Hata durumunda 500 döndür
+    res.status(500).json({ error: 'Yat kaydetme işlemi başarısız oldu.' });
   }
 });
 
@@ -172,7 +173,17 @@ app.put('/yachts/:id', async (req, res) => {
   }
 });
 
-app.post('/send-email', (req, res) => {
+const emailLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 dakika
+  max: 2, // max 2 istek
+  message: {
+    errorKey: 'rateLimitExceeded',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.post('/send-email', emailLimiter, (req, res) => {
   const { user_name, user_email, user_phone, user_location, user_message } =
     req.body;
 
