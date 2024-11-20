@@ -8,6 +8,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import Brokerage from './models/brokerageYacht.js';
 import rateLimit from 'express-rate-limit';
+import axios from 'axios';
 
 dotenv.config();
 
@@ -180,10 +181,8 @@ app.get('/get-recaptcha-site-key', (req, res) => {
 app.post('/verify-recaptcha', (req, res) => {
   const { recaptchaToken } = req.body;
 
-  // Secret key'i backend .env dosyasından alın
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
-  // Google reCAPTCHA API'ye doğrulama isteği
   axios
     .post(`https://www.google.com/recaptcha/api/siteverify`, null, {
       params: {
@@ -193,10 +192,8 @@ app.post('/verify-recaptcha', (req, res) => {
     })
     .then((response) => {
       if (response.data.success && response.data.score > 0.5) {
-        // reCAPTCHA doğrulaması başarılı
         res.status(200).json({ message: 'reCAPTCHA doğrulaması başarılı' });
       } else {
-        // reCAPTCHA doğrulaması başarısız
         res.status(400).json({ error: 'reCAPTCHA doğrulaması başarısız' });
       }
     })
