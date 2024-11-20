@@ -173,6 +173,39 @@ app.put('/yachts/:id', async (req, res) => {
   }
 });
 
+app.get('/get-recaptcha-site-key', (req, res) => {
+  res.json({ siteKey: process.env.RECAPTCHA_SITE_KEY });
+});
+
+app.post('/verify-recaptcha', (req, res) => {
+  const { recaptchaToken } = req.body;
+
+  // Secret key'i backend .env dosyasından alın
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+
+  // Google reCAPTCHA API'ye doğrulama isteği
+  axios
+    .post(`https://www.google.com/recaptcha/api/siteverify`, null, {
+      params: {
+        secret: secretKey,
+        response: recaptchaToken,
+      },
+    })
+    .then((response) => {
+      if (response.data.success && response.data.score > 0.5) {
+        // reCAPTCHA doğrulaması başarılı
+        res.status(200).json({ message: 'reCAPTCHA doğrulaması başarılı' });
+      } else {
+        // reCAPTCHA doğrulaması başarısız
+        res.status(400).json({ error: 'reCAPTCHA doğrulaması başarısız' });
+      }
+    })
+    .catch((error) => {
+      console.error('Error during reCAPTCHA verification:', error);
+      res.status(500).json({ error: 'Sunucu hatası' });
+    });
+});
+
 const emailLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 dakika
   max: 2, // max 2 istek
